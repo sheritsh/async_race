@@ -93,6 +93,7 @@
 
 .car {
   width: 100px;
+  transform: translateY(+20%);
 }
 
 .finish {
@@ -102,6 +103,7 @@
   width: 100px;
   height: 100px;
   right: 200px;
+  transform: translateY(+10%);
 }
 
 .options-btn {

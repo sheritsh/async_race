@@ -5,15 +5,22 @@ import { ICar, IGettedCar } from '../../api/types';
 import getCarImage from '../../utils/get-car';
 import { getRandomColor, getRandomName } from '../../utils/utils';
 import Winners from '../winners/winners';
+import Pagination from '../pagination/pagination';
+import IQueryParam from '../../utils/types';
 
 export default class Garage {
   private GarageElement : HTMLElement;
 
+  private currentPage : number = 1;
+
   Api : Api;
+
+  Pagination : Pagination | null;
 
   constructor() {
     this.GarageElement = HTMLElementFactory.create('div', ['garage']);
     this.Api = new Api();
+    this.Pagination = null;
     this.composeGarage();
   }
 
@@ -32,12 +39,23 @@ export default class Garage {
       Garage.composeUpdateOption(),
       this.composeRaceOption(),
     );
-    const carsData = await this.Api.getCars();
-    const garageTitle = await HTMLElementFactory.create('div', ['garage__title'], `GARAGE (${carsData.cars.length})`);
+    const queryParams: IQueryParam[] = [{ key: '_page', value: this.currentPage.toString() }, { key: '_limit', value: '7' }];
+    const carsData = await this.Api.getCars(queryParams);
+    const garageTitle = await HTMLElementFactory.create('div', ['garage__title'], `GARAGE (${carsData.carsAmount})`);
     const garageCars = HTMLElementFactory.create('div', ['garage__cars']);
     garageCars.append(this.composeGarageCars(carsData));
     garage.append(garageController, garageTitle, garageCars);
-    this.GarageElement.append(garage);
+    if (this.Pagination === null) {
+      this.Pagination = new Pagination(carsData.carsAmount, 7);
+      this.Pagination.setOnPageChangeCallback((currentPage) => {
+        this.currentPage = currentPage;
+        this.render();
+        console.log(this.currentPage);
+      });
+    } else {
+      this.Pagination.totalPages = carsData.carsAmount;
+    }
+    this.GarageElement.append(garage, this.Pagination.getPagination() as HTMLElement);
   }
 
   composeRaceOption() {
