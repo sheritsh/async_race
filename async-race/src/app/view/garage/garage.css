@@ -1,0 +1,105 @@
+.garage-controller__option {
+  display: flex;
+  margin-bottom: 5px;
+}
+
+.input_div {
+  background-color: white;
+
+}
+
+.garage-controller__option-btn {
+  padding: 5px;
+  width: 80px;
+  background-color: #fba626;
+  border: 1px solid black;
+  border-radius: 5px;
+  font-weight: 600;
+}
+
+.garage-controller__option-btn:hover:not([disabled]) {
+  background-color: #fb8926;
+}
+
+.garage-controller__option-btn:active:not([disabled]) {
+  transform: scale(0.9);
+}
+
+.garage-controller__option-btn:disabled {
+  background-color: #a9a9a9;
+  opacity: 0.8;
+}
+
+.div__color {
+  background: none;
+  width: 30px;
+  border: none;
+  border-radius: 10px;
+}
+
+.input_div {
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  border-radius: 5px;
+  margin-right: 5px;
+  border: 2px solid #fba62600;
+}
+
+.input_div:focus-within {
+  border: 2px solid #FBA526;
+}
+
+.div__name {
+  border: none;
+  outline: none;
+  height: 100%;
+  font-size: 18px;
+}
+
+.garage__title {
+  font-size: 24px;
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+.div__name:focus-within {
+  border: none;
+}
+
+.garage__car {
+  background-color: rgba(0, 0, 0, 0.287);
+  margin-bottom: 10px;
+  padding: 10px;
+}
+
+.car__title {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 5px;
+}
+
+.car__body {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: #1F2937;
+  border-bottom: 3px dashed white;
+}
+
+.car__remote {
+  width: 50px;
+}
+
+.car {
+  width: 100px;
+}
+
+.finish {
+  position: absolute;
+  background-image: url(../../../../assets/svg/finish.svg);
+  background-repeat: no-repeat;
+  width: 100px;
+  height: 100px;
+  right: 100px;
+}
