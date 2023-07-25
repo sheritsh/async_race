@@ -157,10 +157,59 @@ export default class Garage {
       const nameCar = HTMLElementFactory.create('div', ['remove-btn'], `${car.name}`);
       const carContainerBody = HTMLElementFactory.create('div', ['car__body']);
       const carRemoteOptions = HTMLElementFactory.create('div', ['car__remote']);
-      const startBtn = HTMLElementFactory.create('button', ['start-btn'], 'Start');
-      const stopBtn = HTMLElementFactory.create('button', ['stop-btn'], 'Stop');
+      const startBtn = HTMLElementFactory.create('button', ['start-btn'], 'Start') as HTMLButtonElement;
+      const stopBtn = HTMLElementFactory.create('button', ['stop-btn'], 'Stop') as HTMLButtonElement;
+      stopBtn.disabled = true;
       carRemoteOptions.append(startBtn, stopBtn);
       const carImage = HTMLElementFactory.create('div', ['car'], `${getCarImage(car.color)}`);
+      let isBurnOut: boolean = false;
+      startBtn.addEventListener('click', async () => {
+        isBurnOut = false;
+        startBtn.disabled = true;
+        stopBtn.disabled = false;
+        const engineInfo = await this.Api.startEngine(car.id);
+        console.log(engineInfo);
+
+        const carTime: number = Number(
+          (engineInfo.distance / engineInfo.velocity / 1000).toFixed(3),
+        );
+        console.log(`Time to finish ${carTime}`);
+
+        const windowWidth: number = window.innerWidth;
+        const distanceToPass: number = windowWidth * 0.81 - 150;
+        console.log(`Need to pass ${distanceToPass}`);
+        // UTILS
+        const fpsAnimation = 240;
+        const durationAnimation = carTime * 1000;
+        const frame = distanceToPass / fpsAnimation;
+        let currentPosition: number = 0;
+
+        function moveCar() {
+          if (isBurnOut) {
+            return;
+          }
+          currentPosition += frame;
+          carImage.style.translate = `${currentPosition}px`;
+          if (currentPosition < distanceToPass) {
+            setTimeout(moveCar, durationAnimation / fpsAnimation);
+          } else {
+            // clearInterval(carAnimation);
+          }
+        }
+        moveCar();
+        try {
+          await this.Api.switchEngineToDrive(car.id);
+        } catch (error) {
+          isBurnOut = true;
+        }
+      });
+      stopBtn.addEventListener('click', async () => {
+        stopBtn.disabled = true;
+        startBtn.disabled = false;
+        isBurnOut = true;
+        await this.Api.stopEngine(car.id);
+        carImage.style.translate = '0';
+      });
       const finishImage = HTMLElementFactory.create('div', ['finish']);
       carContainerBody.append(carRemoteOptions, carImage, finishImage);
       carContainerTitle.append(selectBtn, removeBtn, nameCar);
