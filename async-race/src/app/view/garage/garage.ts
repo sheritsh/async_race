@@ -52,8 +52,17 @@ export default class Garage {
         this.render();
         console.log(this.currentPage);
       });
+    } else if (this.Pagination.totalPages !== Math.ceil(carsData.carsAmount / 7)) {
+      if ((this.Pagination.totalPages > Math.ceil(carsData.carsAmount / 7))) {
+        this.Pagination.prevPage();
+      } else {
+        this.Pagination.currentPage = this.currentPage;
+      }
+      this.Pagination.totalPages = Math.ceil(carsData.carsAmount / 7);
+      this.Pagination.totalItems = carsData.carsAmount;
+      this.Pagination.render();
     } else {
-      this.Pagination.totalPages = carsData.carsAmount;
+      this.Pagination.totalPages = Math.ceil(carsData.carsAmount / 7);
     }
     this.GarageElement.append(garage, this.Pagination.getPagination() as HTMLElement);
   }

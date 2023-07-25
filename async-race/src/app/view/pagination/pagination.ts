@@ -8,10 +8,13 @@ export default class Pagination {
 
   public totalPages: number;
 
+  public totalItems : number;
+
   static onPageChangeCallback: (currentPage: number) => void = () => {};
 
   constructor(itemsAmount: number, itemsPerPage: number) {
-    this.totalPages = Math.ceil(itemsAmount / itemsPerPage);
+    this.totalItems = itemsAmount;
+    this.totalPages = Math.ceil(this.totalItems / itemsPerPage);
     this.PaginationElement = HTMLElementFactory.create('div', ['pagination']);
     this.composePagination();
   }
