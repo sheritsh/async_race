@@ -14,6 +14,11 @@ export default class Winners {
     this.composeWinners();
   }
 
+  render() {
+    this.WinnersElement.innerHTML = '';
+    this.composeWinners();
+  }
+
   async composeWinners() {
     const winnersContainer = HTMLElementFactory.create('div', ['winners__container']);
     const winnersTable = HTMLElementFactory.create('table', ['winners__table']);

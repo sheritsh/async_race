@@ -101,5 +101,27 @@
   background-repeat: no-repeat;
   width: 100px;
   height: 100px;
-  right: 100px;
+  right: 200px;
+}
+
+.options-btn {
+  background-color: #86668E;
+  padding: 7px;
+  border-radius: 10px;
+  border: 1px solid black;
+  color: white;
+  margin: 10px 5px;
+}
+
+.options-btn:hover:not([disabled]) {
+  background-color: #af3d92;
+}
+
+.options-btn:active:not([disabled]) {
+  transform: scale(0.9);
+}
+
+.options-btn:disabled {
+  background-color: #a9a9a9;
+  opacity: 0.8;
 }

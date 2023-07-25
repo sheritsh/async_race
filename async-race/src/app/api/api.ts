@@ -1,5 +1,5 @@
 import IQueryParam from '../utils/types';
-import generateQueryString from '../utils/utils';
+import { generateQueryString } from '../utils/utils';
 import {
   ICar,
   IEngineDrive,

@@ -11,6 +11,7 @@ export default class App {
     const main = HTMLElementFactory.create('main', ['main']);
     const garageElement = garage.getGarage();
     const winnersElement = winners.getWinners();
+    winnersElement.style.display = 'none';
     setTimeout(() => {
       main.append(garageElement, winnersElement);
     }, 50);
@@ -22,6 +23,7 @@ export default class App {
       winnersClass.style.display = 'none';
     });
     header.setOnWinnersClickCallback(() => {
+      winners.render();
       const garageClass = document.querySelector('.garage') as HTMLElement;
       const winnersClass = document.querySelector('.winners') as HTMLElement;
       garageClass.style.display = 'none';
