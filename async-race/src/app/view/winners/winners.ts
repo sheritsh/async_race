@@ -60,7 +60,6 @@ export default class Winners {
         this.currentPage = currentPage;
         this.render();
       });
-      console.log(this.currentPage);
     }
 
     this.WinnersElement.append(winnersContainer, this.Pagination.getPagination() as HTMLElement);

@@ -24,3 +24,7 @@ tr {
 tr:hover {
   background-color: #ffd580;
 }
+
+.winners__table {
+  height: 70vh;
+}

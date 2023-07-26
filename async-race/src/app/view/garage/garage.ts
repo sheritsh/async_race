@@ -97,12 +97,9 @@ export default class Garage {
         button.click();
       });
       setTimeout(async () => {
-        // LOGIC TO REGISTER OR UPDATE WINNER
         try {
           const winner = await this.Api.getWinner(this.raceIdWinner as number);
-          console.log(winner.id);
           if (winner.id !== undefined) {
-            // UPDATE WINNERA
             if (this.raceTimeWinner !== null) {
               const newTime = this.raceTimeWinner < winner.time ? this.raceTimeWinner : winner.time;
               const newWinAmount = winner.wins + 1;
@@ -120,13 +117,10 @@ export default class Garage {
           if (this.raceTimeWinner === null) {
             this.raceTimeWinner = 12;
           }
-          const newWinner = await this.Api.createWinner(
+          await this.Api.createWinner(
             { id: this.raceIdWinner as number, time: this.raceTimeWinner as number, wins: 1 },
           );
-          console.log(newWinner);
         }
-        // LOGIC
-
         if (
           this.raceIdWinner !== null && this.raceNameWinner !== null && this.raceTimeWinner !== null
         ) {
@@ -247,17 +241,14 @@ export default class Garage {
         startBtn.disabled = true;
         stopBtn.disabled = false;
         const engineInfo = await this.Api.startEngine(car.id);
-        console.log(engineInfo);
 
         const carTime: number = Number(
           (engineInfo.distance / engineInfo.velocity / 1000).toFixed(3),
         );
-        console.log(`Time to finish ${carTime}`);
 
         const windowWidth: number = window.innerWidth;
         const distanceToPass: number = windowWidth * 0.81 - 150;
-        console.log(`Need to pass ${distanceToPass}`);
-        // UTILS
+
         const fpsAnimation = 240;
         const durationAnimation = carTime * 1000;
         const frame = distanceToPass / fpsAnimation;
@@ -271,8 +262,6 @@ export default class Garage {
           carImage.style.translate = `${currentPosition}px`;
           if (currentPosition < distanceToPass) {
             setTimeout(moveCar, durationAnimation / fpsAnimation);
-          } else {
-            // clearInterval(carAnimation);
           }
         }
         moveCar();
