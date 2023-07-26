@@ -24,4 +24,5 @@ body {
   background-repeat: no-repeat;
   font-family: Montserrat;
   overflow-x: hidden;
+  position: relative;
 }

@@ -17,6 +17,14 @@ export default class Garage {
 
   Pagination : Pagination | null;
 
+  private raceIdWinner: number | null = null;
+
+  private raceTimeWinner: number | null = null;
+
+  private raceNameWinner: string | null = null;
+
+  private raceVelocityWinner: number | null = null;
+
   constructor() {
     this.GarageElement = HTMLElementFactory.create('div', ['garage']);
     this.Api = new Api();
@@ -50,7 +58,6 @@ export default class Garage {
       this.Pagination.setOnPageChangeCallback((currentPage) => {
         this.currentPage = currentPage;
         this.render();
-        console.log(this.currentPage);
       });
     } else if (this.Pagination.totalPages !== Math.ceil(carsData.carsAmount / 7)) {
       if ((this.Pagination.totalPages > Math.ceil(carsData.carsAmount / 7))) {
@@ -72,6 +79,60 @@ export default class Garage {
     const resetBtn = HTMLElementFactory.create('button', ['reset-btn', 'options-btn'], 'RESET') as HTMLInputElement;
     resetBtn.disabled = true;
     const raceBtn = HTMLElementFactory.create('button', ['race-btn', 'options-btn'], 'RACE') as HTMLInputElement;
+    raceBtn.addEventListener('click', () => {
+      this.raceIdWinner = null;
+      this.raceNameWinner = null;
+      this.raceTimeWinner = null;
+      this.raceVelocityWinner = null;
+      // TO DO 1
+      const garageController = document.querySelector('.garage-controller');
+      const optionElements = garageController?.querySelectorAll('input, button');
+      const startBtns = document.querySelectorAll('.start-btn');
+      optionElements?.forEach((elem) => {
+        const element = elem as HTMLInputElement;
+        element.disabled = true;
+      });
+      startBtns.forEach((btn) => {
+        const button = btn as HTMLButtonElement;
+        button.click();
+      });
+      setTimeout(async () => {
+        // LOGIC TO REGISTER OR UPDATE WINNER
+        try {
+          const winner = await this.Api.getWinner(this.raceIdWinner as number);
+          console.log(winner.id);
+          if (winner.id === undefined) {
+            throw new Error();
+          }
+        } catch {
+          const newWinner = await this.Api.createWinner(
+            { id: this.raceIdWinner as number, time: this.raceTimeWinner as number, wins: 1 },
+          );
+          console.log(newWinner);
+        }
+        // LOGIC
+
+        const winnerLayout = HTMLElementFactory.create('div', ['winner-layout']);
+        const cupImg = HTMLElementFactory.create('div', ['winner-layout__cup']);
+        const winnerTitle = HTMLElementFactory.create('div', ['winner-layout__winner'], `${this.raceNameWinner} won in ${this.raceTimeWinner} sec`);
+        winnerLayout.append(cupImg, winnerTitle);
+        document.body.append(winnerLayout);
+        setTimeout(() => {
+          const layout = document.querySelector('.winner-layout');
+          layout?.remove();
+        }, 3000);
+        resetBtn.disabled = false;
+      }, 5000);
+    });
+    resetBtn.addEventListener('click', () => {
+      const stopBtns = document.querySelectorAll('.stop-btn');
+      stopBtns.forEach((btn) => {
+        resetBtn.disabled = true;
+        raceBtn.disabled = false;
+        const button = btn as HTMLButtonElement;
+        button.click();
+      });
+    });
     const generateCars = HTMLElementFactory.create('button', ['generate-btn', 'options-btn'], 'GENERATE CARS') as HTMLInputElement;
     generateCars.addEventListener('click', () => {
       for (let i = 0; i < 100; i += 1) {
@@ -96,7 +157,6 @@ export default class Garage {
     const createBtn = HTMLElementFactory.create('button', ['garage-controller__option-btn', 'create-btn'], 'Create');
     createBtn.addEventListener('click', async () => {
       const carName = inputCarName.value ? inputCarName.value : getRandomName();
-      console.log(`Name is ${carName} Color is ${inputCarColor.value}`);
       await this.Api.createCar(
         { name: carName, color: inputCarColor.value },
       );
@@ -199,6 +259,12 @@ export default class Garage {
         moveCar();
         try {
           await this.Api.switchEngineToDrive(car.id);
+          if (this.raceVelocityWinner === null || engineInfo.velocity > this.raceVelocityWinner) {
+            this.raceIdWinner = car.id;
+            this.raceNameWinner = car.name;
+            this.raceTimeWinner = carTime;
+            this.raceVelocityWinner = engineInfo.velocity;
+          }
         } catch (error) {
           isBurnOut = true;
         }

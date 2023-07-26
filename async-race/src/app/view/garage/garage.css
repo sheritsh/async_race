@@ -128,3 +128,28 @@
   background-color: #a9a9a9;
   opacity: 0.8;
 }
+
+.winner-layout {
+  z-index: 3;
+  background-color: #1f2937d7;
+  width: min(50vw, 500px);
+  height: min(50vw, 300px);
+  position: absolute;
+  top: 50vh;
+  left: 50vw;
+  translate: -50% -50%;
+  border-radius: 20px;
+}
+
+.winner-layout__cup {
+  margin: 0 auto;
+  width: min(30vw, 200px);
+  height: min(30vw, 200px);
+  background: url('../../../../assets/img/cup.png');
+  background-size: contain;
+}
+
+.winner-layout__winner {
+  margin: 0 auto;
+  text-align: center;
+}
