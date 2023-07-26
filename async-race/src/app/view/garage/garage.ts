@@ -1,7 +1,7 @@
 import './garage.css';
 import HTMLElementFactory from '../../utils/html-element-factory';
 import Api from '../../api/api';
-import { ICar, IGettedCar } from '../../api/types';
+import { ICar, IGettedCar, ServerResponces } from '../../api/types';
 import getCarImage from '../../utils/get-car';
 import { getRandomColor, getRandomName } from '../../utils/utils';
 import Winners from '../winners/winners';
@@ -101,10 +101,25 @@ export default class Garage {
         try {
           const winner = await this.Api.getWinner(this.raceIdWinner as number);
           console.log(winner.id);
-          if (winner.id === undefined) {
-            throw new Error();
+          if (winner.id !== undefined) {
+            // UPDATE WINNERA
+            if (this.raceTimeWinner !== null) {
+              const newTime = this.raceTimeWinner < winner.time ? this.raceTimeWinner : winner.time;
+              const newWinAmount = winner.wins + 1;
+              const newData = {
+                id: winner.id,
+                wins: newWinAmount,
+                time: newTime as number,
+              };
+              await this.Api.updateWinner(winner.id, newData);
+            }
+          } else {
+            throw new Error(`Error: ${ServerResponces.NOT_FOUND}`);
           }
         } catch {
+          if (this.raceTimeWinner === null) {
+            this.raceTimeWinner = 12;
+          }
           const newWinner = await this.Api.createWinner(
             { id: this.raceIdWinner as number, time: this.raceTimeWinner as number, wins: 1 },
           );
@@ -112,17 +127,21 @@ export default class Garage {
         }
         // LOGIC
 
-        const winnerLayout = HTMLElementFactory.create('div', ['winner-layout']);
-        const cupImg = HTMLElementFactory.create('div', ['winner-layout__cup']);
-        const winnerTitle = HTMLElementFactory.create('div', ['winner-layout__winner'], `${this.raceNameWinner} won in ${this.raceTimeWinner} sec`);
-        winnerLayout.append(cupImg, winnerTitle);
-        document.body.append(winnerLayout);
-        setTimeout(() => {
-          const layout = document.querySelector('.winner-layout');
-          layout?.remove();
-        }, 3000);
+        if (
+          this.raceIdWinner !== null && this.raceNameWinner !== null && this.raceTimeWinner !== null
+        ) {
+          const winnerLayout = HTMLElementFactory.create('div', ['winner-layout']);
+          const cupImg = HTMLElementFactory.create('div', ['winner-layout__cup']);
+          const winnerTitle = HTMLElementFactory.create('div', ['winner-layout__winner'], `${this.raceNameWinner} won in ${this.raceTimeWinner} sec`);
+          winnerLayout.append(cupImg, winnerTitle);
+          document.body.append(winnerLayout);
+          setTimeout(() => {
+            const layout = document.querySelector('.winner-layout');
+            layout?.remove();
+          }, 3000);
+        }
         resetBtn.disabled = false;
-      }, 5000);
+      }, 6000);
     });
     resetBtn.addEventListener('click', () => {
       const stopBtns = document.querySelectorAll('.stop-btn');

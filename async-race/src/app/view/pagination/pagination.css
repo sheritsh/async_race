@@ -1,4 +1,5 @@
-.pagination {
+.pagination,
+.pagination-winners {
   display: flex;
   justify-content: center;
   gap: 10px;
